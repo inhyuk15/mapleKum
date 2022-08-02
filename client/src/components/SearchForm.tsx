@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 
-const SearchForm = (props: { getData: any }) => {
-  const { getData } = props;
+const SearchForm = (props: { getData: any; isOnLoading: boolean }) => {
+  const { getData, isOnLoading } = props;
   const [keyword, setKeyword] = useState("");
   return (
-    <div className="form">
+    <div className={isOnLoading ? "form disable" : "form"}>
       <input
         type="text"
         className="form-text"
+        disabled={isOnLoading ? true : false}
         onChange={(e: any) => {
           setKeyword(e.target.value);
         }}
@@ -22,6 +23,7 @@ const SearchForm = (props: { getData: any }) => {
       <button
         type="button"
         className="form-btn"
+        disabled={isOnLoading ? true : false}
         onClick={() => {
           if (keyword) {
             getData(keyword);

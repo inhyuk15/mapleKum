@@ -35,7 +35,7 @@ async function openBrowser(keyword) {
 	  // 예외 처리
   try {
     // 해당 콘텐츠가 로드될 때까지 대기
-    await page.waitForSelector("#rso div.g", { timeout: 10000 });
+    await page.waitForSelector("#rso div.g", { timeout: 100000 });
   } catch (error) {
     // 해당 태그가 없을 시 검색결과 없음 반환
     console.log("에러 발생: " + error);

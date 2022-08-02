@@ -28,6 +28,9 @@
   background-color: #13424b;
   color: #fff;
 }
+.App .form.disable .form-btn {
+  background-color: #b3b3b3;
+}
 .App .card-list {
   column-count: 2;
   column-gap: 10px;
@@ -49,6 +52,9 @@
   background-color: #13424b;
   color: #fff;
 }
+.App .card-list.disable .top {
+  background-color: #b3b3b3;
+}
 .App .card .top .kategorie {
   font-size: 11px;
 }
@@ -68,4 +74,22 @@
   text-decoration: none;
   background-color: #e5e5e5;
   color: #000;
+}
+.App .card-list.disable .link {
+  color: #fff;
+}
+.App .card-list .none {
+  font-size: 13px;
+}
+.App .loading {
+  overflow: hidden;
+  text-align: center;
+  height: 0;
+  line-height: 18px;
+  font-size: 0;
+  transition: 0.3s;
+}
+.App .loading.on {
+  font-size: 13px;
+  height: 20px;
 }
