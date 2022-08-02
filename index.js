@@ -31,18 +31,18 @@ async function openBrowser(keyword) {
   const page = await browser.newPage();
 
   // 포탈로 이동
-  await page.goto("https://www.google.com/");
+  await page.goto("https://maplestory.nexon.com/Ranking/World/Total");
 
   // 키워드 입력
-  await page.type("input[class='gLFyf gsfi']", keyword);
+  await page.type("input[name=search_text]", keyword);
   
   // 키워드 검색
-  await page.type("input[class='gLFyf gsfi']", String.fromCharCode(13));
+  await page.type("input[name=search_text]", String.fromCharCode(13));
 
 	  // 예외 처리
   try {
     // 해당 콘텐츠가 로드될 때까지 대기
-    await page.waitForSelector("#rso div.g", { timeout: 100000 });
+    await page.waitForSelector(".search_com_chk", { timeout: 100000 });
   } catch (error) {
     // 해당 태그가 없을 시 검색결과 없음 반환
     console.log("에러 발생: " + error);
@@ -59,28 +59,37 @@ async function openBrowser(keyword) {
   // 호출된 브라우저 영역
   const searchData = await page.evaluate(() => {
     // 검색된 돔 요소를 배열에 담음
-    const contentsList = Array.from(document.querySelectorAll("#rso div.g"));
+    const contentsList = Array.from(document.querySelectorAll(".search_com_chk"));
     let contentsObjList = [];
 
     // 검색결과 크롤링
     contentsList.forEach((item) => {
-      if (item.className === "g") {
-        const title = item.querySelector("h3");
-        const link = item.querySelector(".yuRUbf");
-        const text = item.querySelector(".VwiC3b");
-        const kategorie = item.querySelector(".iUh30 ");
+      // if (item.className === "g") {
+        const characterName = item.querySelector(".search_com_chk > .left > dl > dt > a");
+        const link = item.querySelector(".search_com_chk > .left > dl > dt > a");
+        const characterLevel = item.querySelector(".search_com_chk > td:nth-child(3)");
+        const characterInfo = item.querySelector(".search_com_chk > .left > dl > dd");
+        const characterServerImg = item.querySelector(".search_com_chk > .left > dl > dt > a > img");
+        const characterImg = item.querySelector(".search_com_chk > .left > .char_img > img");
 
-        if (title && link && text && kategorie) {
+        if (true) {
           contentsObjList.push({
-            title: title.textContent, // 타이틀
-            link: link.children[0].href, // 링크
-            text: text.textContent, // 내용
-            kategorie: kategorie.textContent, // 카테고리
+            // title: title.textContent, // 타이틀
+            // link: link.children[0].href, // 링크
+            // text: text.textContent, // 내용
+            // kategorie: kategorie.textContent, // 카테고리
+              characterName: characterName.text,
+              link: link.href,
+              characterLevel: characterLevel.innerText,
+              characterInfo: characterInfo.innerText,
+              characterServerImg: characterServerImg.src,
+              characterImg: characterImg.src
           });
         }
-      }
+      // }
     });
-
+    // console.log(link.toString());
+    console.log("hi");
     // 호출된 브라우저 영역 콘솔창에서 확인할 수 있음
     console.log(contentsList); // 검색한 엘리먼트 리스트
     console.log(contentsObjList); // 검색한 콘텐츠 오브젝트 리스트

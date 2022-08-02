@@ -7,7 +7,7 @@ const SearchList = (props: { searchData: []; isOnLoading: boolean }) => {
     <div className={isOnLoading ? "card-list disable" : "card-list"}>
       {searchData.map(
         (item: any, idx: number): JSX.Element => {
-          if (item.kategorie && item.kategorie && item.text) {
+          if (item.characterName) {
             return <SearchItem key={idx} item={item} />;
           } else {
             return (
