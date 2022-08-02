@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+	  "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+		"dev:server": "npm start",
+	  "dev:client": "cd client && npm start",
+		"heroku-postbuild": "cd client && npm install && npm run build"
   },
   "repository": {
     "type": "git",

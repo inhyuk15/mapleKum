@@ -10,3 +10,12 @@ app.use("/api/data", function(req, res) {
 });
 
 console.log(`server running at http ${port}`);
+
+
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname + '/client/build/index.html')
+});
