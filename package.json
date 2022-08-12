@@ -29,5 +29,9 @@
     "exrpess": "0.0.1-security",
     "nodemon": "2.0.19",
     "puppeteer": "15.5.0"
-  }
+  },
+  "engines": {
+		"node": "18.2.0",
+		"npm": "8.9.0"
+	}
 }
