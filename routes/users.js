@@ -3,8 +3,6 @@ const kumStatus = require('./kumStatus');
 
 const puppeteer = require('puppeteer');
 
-
-
 users.use("/data", async function (req, res) {
     console.log("검색 키워드: " + req.query.keyword);
     const resultList = await openBrowser(req.query.keyword);
