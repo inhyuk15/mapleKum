@@ -9,6 +9,9 @@ var compression = require('compression');
 app.use(compression());
 app.use('/users', usersRouter);
 
+const port = process.env.PORT || 5000;
+app.listen(port);
+
 app.use(function(req, res, next) {
   next(createError(404));
 });
