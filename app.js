@@ -20,7 +20,7 @@ app.use(function(err, req, res, next) {
 });
 
 app.use(express.static(path.join(__dirname, 'client/build')));
-app.use('/', (req, res) => {
+app.use('*', (req, res) => {
 	res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
