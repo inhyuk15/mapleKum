@@ -1,7 +1,7 @@
 import React from "react";
 import SearchItem from "./SearchItem";
 
-const SearchList = (props: { searchData: []; isOnLoading: boolean }) => {
+const SearchList = (props: { searchData: []; isOnLoading: boolean;}) => {
   const { searchData, isOnLoading } = props;
   return (
     <div className={isOnLoading ? "card-list disable" : "card-list"}>

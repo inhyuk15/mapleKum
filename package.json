@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon ./bin/www",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npm start",
     "dev:client": "cd client && npm start",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "cd client && npm install && npm run build",
+    "tmp": "node ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -22,9 +23,14 @@
   },
   "homepage": "https://github.com/inhyuk15/mapleKum#readme",
   "dependencies": {
+    "compression": "1.7.4",
     "concurrently": "7.3.0",
+    "cookie-parser": "1.4.6",
+    "debug": "4.3.4",
     "express": "4.18.1",
     "exrpess": "0.0.1-security",
+    "http-errors": "2.0.0",
+    "morgan": "1.10.0",
     "nodemon": "2.0.19",
     "puppeteer": "15.5.0"
   }
