@@ -1,5 +1,5 @@
 const users = require('express').Router({mergeParams: true});
-// const kumStatus = require('./kumStatus');
+const kumStatus = require('./kumStatus');
 
 const puppeteer = require('puppeteer');
 
@@ -88,6 +88,6 @@ async function openBrowser(keyword) {
     return searchData;
 }
 
-// users.use('/status', kumStatus);
+users.use('/status', kumStatus);
 
 module.exports = users;
