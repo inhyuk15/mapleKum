@@ -1,5 +1,5 @@
 import React, { useState} from "react";
-// import CharacterKumStatus from "./CharacterKumStatus";
+import CharacterKumStatus from "./CharacterKumStatus";
 import axios from 'axios';
 
 
@@ -37,7 +37,7 @@ const SearchItem = (props: { item: any }) => {
           sendCharacterStatus(item.link)
         }}>캐릭터 스텟 불러오기</button>
 
-        {/* <CharacterKumStatus characterStatus = {status} />  */}
+        <CharacterKumStatus characterStatus = {status} /> 
         
       </div>
     </div>
