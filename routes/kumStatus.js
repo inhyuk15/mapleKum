@@ -2,7 +2,6 @@ const express = require('express');
 var kumStatus = express.Router({ mergeParams: true});
 // var router = express.Router({mergeParams: true});
 const puppeteer = require('puppeteer');
-const axios = require('axios');
 
 kumStatus.use(express.urlencoded({ extended : false}));
 kumStatus.use(express.json());
