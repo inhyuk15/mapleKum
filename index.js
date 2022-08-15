@@ -3,7 +3,7 @@ const app = express();
 var createError = require('http-errors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-const usersRouter = require('/routes/users');
+const usersRouter = require('./routes/users');
 var compression = require('compression');
 
 app.use(compression());
