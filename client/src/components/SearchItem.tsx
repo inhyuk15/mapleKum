@@ -1,16 +1,31 @@
 import React, { useState} from "react";
 import CharacterKumStatus from "./CharacterKumStatus";
+import ItemStatus from "./ItemStatus";
 import axios from 'axios';
 
 
 const SearchItem = (props: { item: any }) => {
   const { item } = props;
   const [ status, setStatus ] = useState([]);
+  const [ itemLink, setItemLink ] = useState("null");
+  const [ itemStatus, setItemStatus] = useState([]);
+  const sendItemStatus = async (link : string) => {
+      const res = await axios.post('/users/status/item', { link : link})
+      .then((res) => {
+          console.log(res.data);
+          setItemStatus(res.data);
+      })
+      .catch(err => {
+          console.error(err);
+      });
+  }
   const sendCharacterStatus = async (link : string) => {
     const res = await axios.post('/users/status', { link : link})
     .then((res) => {
       console.log(res.data);
       setStatus(res.data);
+      setItemLink(res.data[res.data.length - 1].itemLink);
+      // console.log(itemLink);
     })
     .catch(err => {
       console.error(err);
@@ -20,7 +35,6 @@ const SearchItem = (props: { item: any }) => {
   return (
     <div className="card">
       <div className="top">
-        {/* <div className="kategorie"><img src={item.characterServerImg} /></div> */}
         <img src={item.characterServerImg} />
         <div className="title">{item.characterName}</div>
       </div>
@@ -36,9 +50,21 @@ const SearchItem = (props: { item: any }) => {
         <button onClick={() => {
           sendCharacterStatus(item.link)
         }}>캐릭터 스텟 불러오기</button>
-
-        <CharacterKumStatus characterStatus = {status} /> 
-        
+        <div>
+          {
+            itemLink != undefined
+            ? <div><CharacterKumStatus characterStatus = {status} /> 
+              <div className="bottom">
+                  <button onClick={() => {
+                    sendItemStatus(itemLink);
+                  }}>아이템 스텟 불러오기</button>
+                  <ItemStatus itemStatus={itemStatus} />
+              </div>
+            </div>
+            
+            : null
+          }
+        </div>
       </div>
     </div>
   );

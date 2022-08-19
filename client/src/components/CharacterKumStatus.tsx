@@ -1,4 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
+
+import axios from 'axios';
 
 const mp = new Map([
     ['스탯공격력', 0], ['HP', 1], ['MP', 2], ['STR', 3],
@@ -6,10 +8,15 @@ const mp = new Map([
     ['보스공격력', 8], ['방어율무시', 9]
 ])
 
+
 const CharacterKumStatus = (props : {characterStatus : any}) => {
     const {characterStatus} = props;
+    
     let status : any = [];
     characterStatus.forEach((elem : any) => {
+        if(!elem.hasOwnProperty('name')) {
+            return;
+        }
         let name = elem.name;
         name = name.replace(/\s+/g, '');
         let val = elem.val;
@@ -18,16 +25,12 @@ const CharacterKumStatus = (props : {characterStatus : any}) => {
     return (
         <div className="card">
             <StatusBox status = {status}  />
-            {/* <button onClick={()=> console.log(status)}>{JSON.stringify(characterStatus)}</button> */}
         </div>
     )
 };
 
 const StatusBox = (props : {status : any}) => {
     const {status} = props;
-    // if(status === undefined) {
-    //     return <div>undefined</div>
-    // }
     console.log(status);
     return (
         <div>

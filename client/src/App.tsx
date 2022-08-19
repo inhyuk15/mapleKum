@@ -17,7 +17,7 @@ function App() {
       .then((data) => {
         setSearchData(data);
         setIsOnLoading(false);
-        console.log(data);
+        // console.log(data);
       });
   };
   
