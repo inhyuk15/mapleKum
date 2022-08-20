@@ -31,7 +31,6 @@ const SearchItem = (props: { item: any }) => {
       console.error(err);
     });
   }
-
   return (
     <div className="card">
       <div className="top">
@@ -59,9 +58,9 @@ const SearchItem = (props: { item: any }) => {
                     sendItemStatus(itemLink);
                   }}>아이템 스텟 불러오기</button>
                   <ItemStatus itemStatus={itemStatus} />
+
               </div>
             </div>
-            
             : null
           }
         </div>
