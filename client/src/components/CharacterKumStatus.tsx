@@ -31,7 +31,6 @@ const CharacterKumStatus = (props : {characterStatus : any}) => {
 
 const StatusBox = (props : {status : any}) => {
     const {status} = props;
-    console.log(status);
     return (
         <div>
             <div>

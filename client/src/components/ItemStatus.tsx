@@ -19,14 +19,10 @@ const ItemStatus = (props : {itemStatus : any}) => {
             let name = elem.name;
             let val = elem.val;
             let part = elem.part.replace(/\\n/g, '');
-            // console.log(name);
-            // console.log(val);
             val.forEach((ele : any) => {
                 let eVal = ele.val.replace(/\+/, '').replace(/\([\w\s\+\d\%]*\)/g, '').trim();
                 let eStat = ele.stat.replace(/(\\n)/g, '').replace(/\([\w\s\+\d]*\)/g, '').trim();
                 const regex = /\%/;
-                console.log(ele);
-
                 switch (eStat) {
                     case 'STR' :
                         if(regex.test(eVal)) {
@@ -103,24 +99,18 @@ const ItemStatus = (props : {itemStatus : any}) => {
                     <li> 총데미지(보스 데미지 포함) : + {dmgPercent} % </li>
                 </p>
 
-                <p>
-                    <p>
-                        {/* <h3>참고</h3>
-                        스탯 반영치 = (주스탯 × 4 + 부스탯) × 0.01[1]
-                        총 공격력/마력 = ⌊(공격력/마력 총합) × (1 + 공격력%/마력%의 총합)⌋[2]
-                        데미지% 총합 = 1 + 데미지% + XX 공격 시 데미지% + 하이퍼 패시브 데미지%
-                        최종 데미지 보정 = 모든 최종 데미지의 곱
-                        무기 상수
-                        평균 숙련도 보정 = (1 + 숙련도%) / 2
-                        스킬 데미지%
-                        방어율 보정 = 1 - 몬스터의 방어율 × (1 - 총 방무%) = 1 - 몬스터의 방어율 × (1 - 방무%) × (1 - 방무%) × …
-                        평균 크리티컬 보정 = 1 + 크확% × (0.35 + 크뎀%)
-                        속성 내성 보정 = 1 - 속성 내성% × (1 - 속성 내성 무시%) */}
-                    </p>
-                        <p>
-                            <CalcMyStats />
-                        </p>
-                </p>
+                    {/* <h3>참고</h3>
+                    스탯 반영치 = (주스탯 × 4 + 부스탯) × 0.01[1]
+                    총 공격력/마력 = ⌊(공격력/마력 총합) × (1 + 공격력%/마력%의 총합)⌋[2]
+                    데미지% 총합 = 1 + 데미지% + XX 공격 시 데미지% + 하이퍼 패시브 데미지%
+                    최종 데미지 보정 = 모든 최종 데미지의 곱
+                    무기 상수
+                    평균 숙련도 보정 = (1 + 숙련도%) / 2
+                    스킬 데미지%
+                    방어율 보정 = 1 - 몬스터의 방어율 × (1 - 총 방무%) = 1 - 몬스터의 방어율 × (1 - 방무%) × (1 - 방무%) × …
+                    평균 크리티컬 보정 = 1 + 크확% × (0.35 + 크뎀%)
+                    속성 내성 보정 = 1 - 속성 내성% × (1 - 속성 내성 무시%) */}
+                    <CalcMyStats />
             </div>
         )
     }

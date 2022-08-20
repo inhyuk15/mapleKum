@@ -1,6 +1,5 @@
 const express = require('express');
 var kumStatus = express.Router({ mergeParams: true});
-// var router = express.Router({mergeParams: true});
 const puppeteer = require('puppeteer');
 
 kumStatus.use(express.urlencoded({ extended : false}));
@@ -28,6 +27,17 @@ kumStatus.post('/item', async function (req, res, next) {
     }
 })
 
+kumStatus.post('/skill', async function(req, res, next) {
+    console.log("스킬 목록 링크 : " + req.body.link);
+    try {
+        const resultList = await openBrowser2Skill(req.body.link);
+        res.json(resultList);
+    }
+    catch (err) {
+        console.error(err);
+    }
+})
+
 async function openBrowser(link) {
     // // 브라우저 실행 및 옵션, 현재 옵션은 headless 모드 사용 여부
     const browser = await puppeteer.launch({
@@ -45,7 +55,7 @@ async function openBrowser(link) {
     // {
     //     waitUntil: "load",
     // });
-//     // 예외 처리
+    // 예외 처리
     try {
       // 해당 콘텐츠가 로드될 때까지 대기
       await page.waitForSelector(".tab01_con_wrap", { timeout: 100000 });
@@ -72,16 +82,6 @@ async function openBrowser(link) {
         const statusList = document.querySelectorAll(".tab01_con_wrap > .table_style01");
         let contentsObjList = [];
         // 검색결과 크롤링
-        // const StatsAck = statusList.querySelector(".table_style01 > tbody > td > span");
-        // const STR = statusList.querySelector(".table_style01 > tbody > tr:nth-child(1) > td:nth-child(1) > span");
-        const DEX = "0";
-        const INT = "0";
-        const LUK = "0";
-        const CriticalDmg = "0";
-        const BossDmg = "0";
-        const DepenceIgnore = "0";
-        const arcaneForce = "0";
-        
         for(let i =0; i < statusList.length; i++) {
             const trs = statusList[i].querySelectorAll('tbody > tr');
             for(let j =0; j < trs.length; j++) {
@@ -101,6 +101,8 @@ async function openBrowser(link) {
         }
         const itemLink = document.querySelector(".lnb_wrap > .lnb_list > li:nth-child(3) > a");
         contentsObjList.push({itemLink: itemLink.href});
+        const skillLink = document.querySelector(".lnb_wrap > .lnb_list > li:nth-child(7) > a");
+        contentsObjList.push({skillLink: skillLink.href});
         
         return contentsObjList;
   });
@@ -195,6 +197,60 @@ async function openBrowser2Item(link) {
 
   // 검색결과 반환
   return searchData;
+}
+
+async function openBrowser2Skill(link) {
+    // 브라우저 실행 및 옵션, 현재 옵션은 headless 모드 사용 여부
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--window-size=1600,2000",
+        ]
+    });
+    // 브라우저 열기
+    const page = await browser.newPage();
+    // 포탈로 이동
+    await page.goto(link);
+    // 예외 처리
+    try {
+        // 해당 콘텐츠가 로드될 때까지 대기
+        await page.waitForSelector(".skill_wrap", { timeout: 100000 });
+    } catch (error) {
+        // 해당 태그가 없을 시 검색결과 없음 반환
+        console.log("에러 발생: " + error);
+        return [
+        {
+            err: "err"
+        },
+        ];
+    }
+    // 호출된 브라우저 영역
+    const searchData = await page.evaluate(() => {
+        // tier 0, 1, 2, 3, 4, 5에 대한 스킬들
+        let skillSets = document.querySelectorAll('.skill_wrap > div');
+        // // 검색된 돔 요소를 배열에 담음
+        let contentsObjList = [];
+        contentsObjList.push({skillsets : skillSets.length});
+        
+        // 각 tier에 대한 스킬들, ex) tier01 : 1차 스킬
+        skillSets.forEach(sets => {
+            const skillList = sets.querySelectorAll('.skill_list > ul > li');
+            skillList.forEach(skill => {
+                const skillName = skill.querySelector('h2').innerText;
+                const skillInfos = skill.querySelector('.skill_info_wrap > .skill_info_con > .skill_table > tbody > tr > td:nth-child(2) > span').innerText.split('\n');
+                contentsObjList.push({skillName : skillName, skillInfos: skillInfos});
+            })
+        })
+        // 검색결과 크롤링
+        return contentsObjList;
+    });
+    // 브라우저 닫기
+    browser.close();
+
+    // 검색결과 반환
+    return searchData;
 }
 
 module.exports = kumStatus;
