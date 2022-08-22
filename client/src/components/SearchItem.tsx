@@ -12,7 +12,7 @@ const SearchItem = (props: { item: any }) => {
   const [ itemLink, setItemLink ] = useState("null");
   const [ skillLink, setSkillLink ] = useState("null");
   const [ itemStatus, setItemStatus] = useState([]);
-
+  const characterClass = item.characterInfo.split('/')[1].trim()
   const sendCharacterStatus = async (link : string) => {
     const res = await axios.post('/users/status', { link : link})
     .then((res) => {
@@ -41,7 +41,6 @@ const SearchItem = (props: { item: any }) => {
   const sendCharacterSkill = async (link : string) => {
     const res = await axios.post('/users/status/skill', { link : link})
     .then((res) => {
-      console.log(res.data);
       setSkillStatus(res.data);
     })
     .catch(err => {
@@ -71,7 +70,7 @@ const SearchItem = (props: { item: any }) => {
           <CharacterKumStatus characterStatus = {status} />          
           {
             itemLink != undefined
-            ? 
+            ?
             <div className="bottom">
                 <button onClick={() => {
                   sendItemStatus(itemLink);
@@ -88,8 +87,8 @@ const SearchItem = (props: { item: any }) => {
               <div className="bottom">
                   <button onClick={() => {
                     sendCharacterSkill(skillLink);
-                  }}>스킬 패시브 스텟 불러오기</button>
-                  <SkillStatus />
+                  }}>패시브스킬 불러오기</button>
+                  <SkillStatus skillStatus={skillStatus} className = {characterClass} />
               </div>
             : null
           }

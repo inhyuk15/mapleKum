@@ -1,6 +1,7 @@
 const express = require('express');
 var kumStatus = express.Router({ mergeParams: true});
 const puppeteer = require('puppeteer');
+const soulMaster = require('./passiveSkills.js/soulMaster');
 
 kumStatus.use(express.urlencoded({ extended : false}));
 kumStatus.use(express.json());
@@ -252,5 +253,8 @@ async function openBrowser2Skill(link) {
     // 검색결과 반환
     return searchData;
 }
+
+
+kumStatus.use('/passiveSkill', soulMaster);
 
 module.exports = kumStatus;
