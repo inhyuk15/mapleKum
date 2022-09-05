@@ -1,71 +1,82 @@
-import React, {useState} from "react";
-
-import axios from 'axios';
-
-const mp = new Map([
-    ['스탯공격력', 0], ['HP', 1], ['MP', 2], ['STR', 3],
-    ['DEX', 4], ['INT', 5], ['LUK', 6], ['크리티컬 데미지', 7],
-    ['보스공격력', 8], ['방어율무시', 9]
-])
+import React from 'react';
+import styled from 'styled-components';
 
 
-const CharacterKumStatus = (props : {characterStatus : any}) => {
-    const {characterStatus} = props;
-    
-    let status : any = [];
-    characterStatus.forEach((elem : any) => {
-        if(!elem.hasOwnProperty('name')) {
-            return;
-        }
-        let name = elem.name;
-        name = name.replace(/\s+/g, '');
-        let val = elem.val;
-        status[name] = val;
-    });
-    return (
-        <div className="card">
-            <StatusBox status = {status}  />
-        </div>
-    )
+type statusType = {
+    [key: string] : string;
 };
 
-const StatusBox = (props : {status : any}) => {
-    const {status} = props;
+const StatusItemLayout = styled.div`
+    display: grid;
+    grid-template-columns: 1.25fr 0.25fr 2.5fr;
+    gird-auto-rows: minMax(1.25fr, auto);
+    border: 2px solid #aaa;
+    border-radius: 4px;
+    justify-items: center;
+    justify-content: center;
+    grid-gap: 1rem;
+    div  {
+        font-size: 1.2rem;
+        justify-self: center;
+        align-self: center;
+        padding: 0.25rem;
+        text-align: center;
+    }
+`;
+
+const StatusItem = (props: {statusName: string, statusVal: string}) => {
+    const { statusName, statusVal } = props;
+    return (
+        <StatusItemLayout>
+            <div>
+                {statusName}
+            </div>
+            <div>
+                :
+            </div>
+            <div>
+                {statusVal}
+            </div>
+        </StatusItemLayout>
+    );
+};
+
+const StatusBoxLayout = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+`;
+
+// for (const key in passiveSkill) {
+//     const skillInfos = passiveSkill[key]
+//         .skillInfos.map((elem : any) => (<li key={elem}>{elem}</li>));
+//     const t = <ul key={key}>{passiveSkill[key].skillName} {skillInfos}</ul>;
+const StatusBox = (props : {status : statusType}) => {
+    const { status } = props;
+    console.log(status);
+    return (
+        <StatusBoxLayout>
+            <StatusItem statusName="스탯공격력" statusVal={status.스탯공격력} />
+            <StatusItem statusName="HP" statusVal={status.HP} />
+            <StatusItem statusName="MP" statusVal={status.MP} />
+            <StatusItem statusName="STR" statusVal={status.STR} />
+            <StatusItem statusName="DEX" statusVal={status.DEX} />
+            <StatusItem statusName="INT" statusVal={status.INT} />
+            <StatusItem statusName="LUK" statusVal={status.LUK} />
+            <StatusItem statusName="크리티컬 데미지" statusVal={status['크리티컬 데미지']} />
+            <StatusItem statusName="방어율 무시" statusVal={status.방어율무시} />
+            <StatusItem statusName="보스 몬스터 공격시 데미지" statusVal={status.보스공격력} />
+        </StatusBoxLayout>
+    );
+};
+
+
+const CharacterKumStatus = (props : {characterStatus : statusType}) => {
+    const { characterStatus } = props;
     return (
         <div>
-            <div>
-                스탯 공격력 : {status.스탯공격력}
-            </div>
-            <div>
-                HP : {status.HP}
-            </div>
-            <div>
-                MP : {status.MP}
-            </div>
-            <div>
-                STR : {status.STR}
-            </div>
-            <div>
-                DEX : {status.DEX}
-            </div>
-            <div>
-                INT : {status.INT}
-            </div>
-            <div>
-                LUK : {status.LUK}
-            </div>
-            <div>
-                크리티컬 데미지 : {status.크리티컬데미지}
-            </div>
-            <div>
-                방어율 무시 : {status.방어율무시}
-            </div>
-            <div>
-                보스 몬스터 공격시 데미지 : {status.보스공격력}
-            </div>
+            <StatusBox status = {characterStatus} />
         </div>
-    )
+    );
 };
-
 
 export default CharacterKumStatus;

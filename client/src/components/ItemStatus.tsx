@@ -1,148 +1,159 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { ItemType } from './SearchItem';
+import { setState } from '../modules/statsSlice';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
 
-const ItemStatus = (props : {itemStatus : any}) => {
-    const {itemStatus} = props;
+const ItemStatusText = styled.div`
+    color: ${(props) => props.color};
+    text-align: center;
+    &.title {
+        padding: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: orange;
+        grid-column: 1/3;
+    }
+    &.description {
+        font-size: 1rem;
+        color: blue;
+        grid-column: 1/3;
+    }
+`;
+ItemStatusText.defaultProps = {
+    color: 'blue',
+};
+const ItemStatusBoxLayout = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+    border: 2px solid #aaa;
+    border-radius: 4px;
+    background: white;
+    .stats {
+        padding: 0 0.5rem 0.5rem 0;
+    }
+    li {
+        font-size: 1rem;
+    }
+`;
+
+const ItemStatus = (props : {itemStatus : ItemType, isItemOnLoading: boolean}) => {
+    const { itemStatus, isItemOnLoading } = props;
     const items : any = new Map();
-    // 0 힘 1 덱 2 인 3 럭
-    let statsNumber : number[] = [0, 0, 0, 0];
-    let statsPercent : number[] = [0, 0, 0, 0];
-    // 0 공격력, 1 마력
-    let ackNumber : number[] = [0, 0];
-    let ackPercent : number[] = [0, 0];
-    let criticalDmg : number = 0;
-    let dmgPercent : number =0;
-
     const [viewDetail, toggleViewDetail] = useState(false);
+    const {STR, DEX, INT, LUK, 
+        AD, MD,
+        STRPercent, DEXPercent, INTPercent, LUKPercent,
+        ADPercent, MDPercent,
+        CRTDmg, DmgPercent, ResistanceIgnore,
+    } = useAppSelector((state) => state.stat);
+    const dispatch = useAppDispatch()
     
-    const setItems = () => {
-        itemStatus.forEach((elem : any) => {
-            let name = elem.name;
-            let val = elem.val;
-            let part = elem.part.replace(/\\n/g, '');
-            val.forEach((ele : any) => {
-                let eVal = ele.val.replace(/\+/, '').replace(/\([\w\s\+\d\%]*\)/g, '').trim();
-                let eStat = ele.stat.replace(/(\\n)/g, '').replace(/\([\w\s\+\d]*\)/g, '').trim();
-                const regex = /\%/;
-                switch (eStat) {
-                    case 'STR' :
-                        if(regex.test(eVal)) {
-                            statsPercent[0] += Number(eVal.replace(/\%/, ''));
-                        }
-                        else statsNumber[0] += Number(eVal);
-                        break;
-                    case 'DEX' :
-                        if(regex.test(eVal)) statsPercent[1] += Number(eVal.replace(/\%/, ''));
-                        else statsNumber[1] += Number(eVal);
-                        break;
-                    case 'INT' :
-                        if(regex.test(eVal)) statsPercent[2] += Number(eVal.replace(/\%/, ''));
-                        else statsNumber[2] += Number(eVal);
-                        break;
-                    case 'LUK' :
-                        if(regex.test(eVal)) statsPercent[3] += Number(eVal.replace(/\%/, ''));
-                        else statsNumber[3] += Number(eVal);
-                        break;
-                    case '공격력' :
-                        if(regex.test(eVal)) ackPercent[0] += Number(eVal.replace(/\%/, ''));
-                        else ackNumber[0] += Number(eVal);
-                        break;
-                    case '마력' :
-                        if(regex.test(eVal)) ackPercent[1] += Number(eVal.replace(/\%/, ''));
-                        else ackNumber[1] += Number(eVal);
-                        break;
-                    case '올스탯' :
-                        var i;
-                        if(regex.test(eVal)) for(i =0; i < 4; i++) Number(eVal.replace(/\%/, ''));
-                        else for(i =0; i < 4; i++) statsNumber[i] += Number(eVal);
-                        break;
-                    case '크리티컬 데미지' :
-                        criticalDmg += Number(eVal.replace(/\%/, ''));
-                        break;
-                    case '보스 몬스터 공격시 데미지':
-                    case '데미지':
-                        dmgPercent += Number(eVal.replace(/\%/, ''));
-                        break;
-                    default :
-                        break;
+    type potentialOption = {
+        [key: string] : string;
+    }
+    const setPotentialOption = (stats : potentialOption) => {
+        const regex = /%/;
+        for(let key in stats) {
+            let statType = key.trim();
+            let val = stats[key].replace(/\+/, '').replace(/\([\w\s+\d%]*\)/g, '').trim();
+            if(statType == '공격력') statType = 'AD';
+            else if(statType == '마력') statType = 'MD';
+            else if(statType == '크리티컬 데미지') statType = 'CRTDmg';
+            if(regex.test(val)) {
+                if(['STR', 'DEX', 'INT', 'LUK', 'AD', 'MD'].includes(statType)) {
+                    statType += "Percent";
                 }
-            });
-            items.set(part, {name, val});
-        });
-    }
-    
-    const ItemStatusBox = () => {
-        const [forEffect, setEffect] = useState("");
-        useEffect(() => {
-            setItems();
-            setEffect("no meaningful");
-        }, []);
-        return(
-            <div>
-                <p>아이템으로 증가하는 스텟</p>
-                <p>
-                    올스탯 포함
-                    <li> 힘 스탯 : + {statsNumber[0]} </li>
-                    <li> 덱스 스탯 : + {statsNumber[1]} </li>
-                    <li> 인트 스탯 : + {statsNumber[2]} </li>
-                    <li> 럭 스탯 : + {statsNumber[3]} </li>
-                    <li> 공격력 스탯 : + {ackNumber[0]} </li>
-                    <li> 마력 스탯 : + {ackNumber[1]} </li>
-                </p>
-                <p>
-                    올스탯 포함 잠재능력
-                    <li> 힘 퍼센트 : +  {statsPercent[0]} % </li>
-                    <li> 덱스 퍼센트 : +  {statsPercent[1]} % </li>
-                    <li> 인트 퍼센트 : +  {statsPercent[2]} % </li>
-                    <li> 럭 퍼센트 : +  {statsPercent[3]} % </li>
-                    <li> 공격력 퍼센트 : + {ackPercent[0]} % </li>
-                    <li> 마력 퍼센트 : + {ackPercent[1]} % </li>
-                    <li> 크리티컬 데미지 퍼센트 : + {criticalDmg} % </li>
-                    <li> 총데미지(보스 데미지 포함) : + {dmgPercent} % </li>
-                </p>
-
-                    {/* <h3>참고</h3>
-                    스탯 반영치 = (주스탯 × 4 + 부스탯) × 0.01[1]
-                    총 공격력/마력 = ⌊(공격력/마력 총합) × (1 + 공격력%/마력%의 총합)⌋[2]
-                    데미지% 총합 = 1 + 데미지% + XX 공격 시 데미지% + 하이퍼 패시브 데미지%
-                    최종 데미지 보정 = 모든 최종 데미지의 곱
-                    무기 상수
-                    평균 숙련도 보정 = (1 + 숙련도%) / 2
-                    스킬 데미지%
-                    방어율 보정 = 1 - 몬스터의 방어율 × (1 - 총 방무%) = 1 - 몬스터의 방어율 × (1 - 방무%) × (1 - 방무%) × …
-                    평균 크리티컬 보정 = 1 + 크확% × (0.35 + 크뎀%)
-                    속성 내성 보정 = 1 - 속성 내성% × (1 - 속성 내성 무시%) */}
-            </div>
-        )
-    }
-
-    const ItemViewDetail = () => {
-        const [forEffect, setEffect] = useState("");
-        // let itemsList : any = [];
-        const [itemsList, setItemsList] = useState<any>([]);
-        useEffect(() => {
-            let tmp = Object.fromEntries(items);
-            for(let key in tmp) {
-                const t = <li>{tmp[key].name} </li>
-                setItemsList((old : any)=> [...old, t]);
+                val = val.replace(regex, '');
             }
-            setEffect("no meaningful");
-        }, []);
+            dispatch(setState({key: statType, val: Number(val)}));
+        }
+    }
+    const setItemStatusBox = () => {
+        console.log(itemStatus);
+        const parts = Object.keys(itemStatus);
+        const hasPercentage = new RegExp('%');
+        const isPotentialOption = new RegExp('잠재옵션');
+        for(let i =0; i < parts.length; i++) {
+            // ex) 귀걸이, 상의 등...
+            const part = parts[i];
+            // ex) {하프이어링 : {DEX : 32 ... }}
+            const item = itemStatus[part];
+            const itemNames = Object.keys(item);
+            for(let j =0; j < itemNames.length; j++) {
+                const itemName = itemNames[j];
+                const stats = item[itemName];
+                for(let statType in stats) {
+                    const stat = stats[statType];
+                    if(typeof(stat) === 'object') {
+                        setPotentialOption(stat);
+                    }
+                    else {
+                        const regex = /데미지/;
+                        const val = stats[statType].replace(/\+/, '').replace(/\([\w\s+\d%]*\)/g, '').trim();
+                        if(statType == '공격력') dispatch(setState({key: 'AD', val: Number(val)}));
+                        else if(statType == '마력') dispatch(setState({key: 'MD', val: Number(val)}));
+                        else if(regex.test(statType)) {
+                            dispatch(setState({key: 'DmgPercent', val: Number(val.replace('%', ''))}));
+                        }
+                        else dispatch(setState({key: statType, val: Number(val)}));
+                    }
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (itemStatus !== null) setItemStatusBox();
+    }, [itemStatus]);
+
+    const ItemStatusBox = () => (
+        <ItemStatusBoxLayout>
+            <ItemStatusText className="title">아이템으로 증가하는 스탯</ItemStatusText>
+            <ItemStatusText className="description">올스탯 포함</ItemStatusText>
+            <div className="stats">STR : {STR}</div>
+            <div className="stats">DEX : {DEX}</div>
+            <div className="stats">INT : {INT}</div>
+            <div className="stats">LUK : {LUK}</div>
+            <div className="stats">AD : {AD}</div>
+            <div className="stats">MD : {MD}</div>
+            <div className="stats">STR 퍼센트 : {STRPercent}%</div>
+            <div className="stats">DEX 퍼센트 : {DEXPercent}%</div>
+            <div className="stats">INT 퍼센트 : {INTPercent}%</div>
+            <div className="stats">LUK 퍼센트 : {LUKPercent}%</div>
+            <div className="stats">공격력 퍼센트 : {ADPercent}%</div>
+            <div className="stats">마력 퍼센트 : {MDPercent}%</div>
+            <div className="stats">총 데미지 퍼센트 : {DmgPercent}%</div>
+            <div className="stats">크리티컬 데미지 퍼센트 : {CRTDmg}%</div>
+        </ItemStatusBoxLayout>
+    );
+    const ItemViewDetail = () => {
+        const [itemsList, setItemsList] = useState<any>([]);
+        // useEffect(() => {
+        //     const tmp = Object.fromEntries(items);
+        //     for (const val of tmp) {
+        //         const t = <li>{tmp[key].name} </li>;
+        //         setItemsList((old : any) => [...old, t]);
+        //     }
+
+        // }, []);
         return (
             <div>
                 {itemsList}
             </div>
-        )
-    }
+        );
+    };
 
     return (
-        <div>
+        <div className={isItemOnLoading ? 'form disable' : 'form'} >
             <ItemStatusBox />
-            <button onClick={() =>{toggleViewDetail(!viewDetail)}} >
-                상세보기
-            </button>
-            {viewDetail ?  <ItemViewDetail /> : null }
+            {/* <button onClick={() => { toggleViewDetail(!viewDetail); }} >
+            </button> */}
+            {/* {viewDetail ? <ItemViewDetail /> : null } */}
         </div>
-    )
-}
+    );
+};
 
 export default ItemStatus;

@@ -1,24 +1,30 @@
-import React from "react";
-import SearchItem from "./SearchItem";
+import React from 'react';
+import SearchItem from './SearchItem';
 
-const SearchList = (props: { searchData: []; isOnLoading: boolean;}) => {
-  const { searchData, isOnLoading } = props;
-  return (
-    <div className={isOnLoading ? "card-list disable" : "card-list"}>
-      {searchData.map(
-        (item: any, idx: number): JSX.Element => {
-          if (item.characterName) {
-            return <SearchItem key={idx} item={item} />;
-          } else {
-            return (
-              <div key={idx} className="none">
-                검색결과 없음
-              </div>
-            );
-          }
-        }
-      )}
-    </div>
-  );
+export type searchDataType = {
+  characterName: string;
+  link: string;
+  characterLevel: string;
+  characterInfo: string;
+  characterServerImg: string;
+  characterImg: string;
+};
+
+const SearchList = (props: { searchData:searchDataType; isOnLoading: boolean;}) => {
+    const { searchData, isOnLoading } = props;
+    return (
+        <div className={isOnLoading ? 'card-list disable' : 'card-list'}>
+            {
+                searchData !== undefined
+                    ? <SearchItem item={searchData} />
+                    : (
+                        <div className="none">
+              검색결과 없음
+                        </div>
+                    )
+            }
+
+        </div>
+    );
 };
 export default SearchList;

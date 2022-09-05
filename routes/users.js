@@ -5,11 +5,11 @@ const puppeteer = require('puppeteer');
 
 users.use("/data", async function (req, res) {
     console.log("검색 키워드: " + req.query.keyword);
-    const resultList = await openBrowser(req.query.keyword);
-    console.log(resultList);
-    res.json(resultList);
+    const result = await openBrowser(req.query.keyword);
+    res.json(result);
 });
 
+// 캐릭터 정보 줌
 async function openBrowser(keyword) {
     // 브라우저 실행 및 옵션, 현재 옵션은 headless 모드 사용 여부
     const browser = await puppeteer.launch({
@@ -52,8 +52,7 @@ async function openBrowser(keyword) {
     const searchData = await page.evaluate(() => {
       // 검색된 돔 요소를 배열에 담음
       
-      
-      let contentsObjList = [];
+      // let contentsObjList = [];
       // 검색결과 크롤링
       const characterName = document.querySelector(".search_com_chk > .left > dl > dt > a");
       const link = document.querySelector(".search_com_chk > .left > dl > dt > a");
@@ -62,18 +61,15 @@ async function openBrowser(keyword) {
       const characterServerImg = document.querySelector(".search_com_chk > .left > dl > dt > a > img");
       const characterImg = document.querySelector(".search_com_chk > .left > .char_img > img");
       
-      contentsObjList.push({
+      const ret = {
           characterName: characterName.text,
           link: link.href,
           characterLevel: characterLevel.innerText,
           characterInfo: characterInfo.innerText,
           characterServerImg: characterServerImg.src,
           characterImg: characterImg.src
-      });
-      
-      // 호출된 브라우저 영역 콘솔창에서 확인할 수 있음
-      console.log(contentsObjList); // 검색한 콘텐츠 오브젝트 리스트
-      return contentsObjList;
+      };
+      return ret;
     });
     // 브라우저 닫기
     browser.close();

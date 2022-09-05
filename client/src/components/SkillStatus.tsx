@@ -1,65 +1,85 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import styled from 'styled-components';
 
 const classNameMap = new Map();
 classNameMap.set('소울마스터', 'soulMaster');
 
-const SkillStatus = (props : {skillStatus : any, className: string}) => {
-  const {skillStatus, className} = props;
-  const [passiveSkill, setPassiveSkill] = useState<any>([]);
+const cygnus = ['소울마스터', '플레임위자드', '나이트워커', '윈드브레이커', '미하일', '스트라이커'];
 
-  const sendCharacterStatus = async (skillStatus : string) => {
-    const link = "/users/status/passiveSkill/" + classNameMap.get(className);
-    const res = await axios.post(link, { skillStatus})
-    .then((res) => {
-      let skills = res.data;
-      skills = addCygnusPassive(skills);
-      setPassiveSkill(skills);
-      console.log(skills);
-    })
-    .catch(err => {
-      console.log(err);
-    })
+const StatusBoxLayout = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: minMax(5rem, auto);
+  align-items: center;
+  justify-items: center;
+  grid-gap: 0.25rem;
+  // background: #74b9ff;
+  ul {
+    list-style: none;
+    padding-left: 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+    background: #ecf0f1;
   }
+  li {
+    font-size: 1rem;
+    align-self: center;
+  }
+`;
 
-  function addCygnusPassive(skills : any) {
-    skills.push({skillName : '엘레멘탈 하모니', skillInfos : Array('레벨 2당 올스탯 1') });
-    skills.push({skillName : '엘레멘탈 엑스퍼트', skillInfos : Array('공격력, 마력 10%') });
-    return skills;
-  }
-  const StatusBox = () => {
-    const [forEffect, setEffect] = useState("");
-    const [itemsList, setItemsList] = useState<any>([]);
-    useEffect(() => {
-        console.log(passiveSkill);
-        for(let key in passiveSkill) {
-            const skillInfos = passiveSkill[key].skillInfos.map((elem : any) =>{
-              console.log(elem);
-              return (<li>{elem}</li>);
-            })
-            const t= <ul>{passiveSkill[key].skillName} {skillInfos}</ul>
-            setItemsList((old : any)=> [...old, t]);  
+const SkillStatus = (props : {skillStatus : any, className: string, isSkillOnLoading: boolean}) => {
+    const { skillStatus, className, isSkillOnLoading } = props;
+    const [passiveSkill, setPassiveSkill] = useState<any>([]);
+    console.log(skillStatus);
+    function addCygnusPassive(skills : any) {
+        skills.push({ skillName: '엘레멘탈 하모니', skillInfos: Array('레벨 2당 올스탯 1') });
+        skills.push({ skillName: '엘레멘탈 엑스퍼트', skillInfos: Array('공격력, 마력 10%') });
+        return skills;
+    }
+    const sendCharacterStatus = async (skillLink : string) => {
+        try {
+            const link = `/users/status/passiveSkill/${classNameMap.get(className)}`;
+            const res = await axios.post(link, { skillLink });
+            let skills = res.data;
+            if (cygnus.includes(className)) {
+                skills = addCygnusPassive(skills);
+            }
+            setPassiveSkill(skills);
+        } catch (err) {
+            console.log(err);
         }
-        setEffect("no meaningful");
-    }, []);
+    };
+    useEffect(() => {
+        if (skillStatus != null) {
+            sendCharacterStatus(skillStatus);
+        }
+    }, [skillStatus]);
+    const StatusBox = () => {
+        const [itemsList, setItemsList] = useState<any>([]);
+
+        useEffect(() => {
+            for (const key in passiveSkill) {
+                const skillInfos = passiveSkill[key]
+                    .skillInfos.map((elem : any) => (<li key={elem}>{elem}</li>));
+                const t = <ul key={key}>{passiveSkill[key].skillName} {skillInfos}</ul>;
+                setItemsList((old : any) => [...old, t]);
+            }
+        }, []);
+
+        return (
+            <StatusBoxLayout>
+                {itemsList}
+            </StatusBoxLayout>
+        );
+    };
 
     return (
-        <div>
-            {itemsList}
+        <div className={isSkillOnLoading ? 'form disable' : 'form'}>
+            {isSkillOnLoading}
+            <StatusBox />
         </div>
-    )
-  }
-
-  return (
-    <div className="card">
-      class status
-      <button onClick={()=> {
-        sendCharacterStatus(skillStatus);
-      }}>btn</button>
-      <StatusBox />
-    </div>
-  );
+    );
 };
 
 export default SkillStatus;
-
