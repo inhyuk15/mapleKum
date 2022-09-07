@@ -54,6 +54,7 @@ const ItemStatus = (props : {itemStatus : ItemType, isItemOnLoading: boolean}) =
     type potentialOption = {
         [key: string] : string;
     }
+    // 잠재옵션을 state에 등록
     const setPotentialOption = (stats : potentialOption) => {
         const regex = /%/;
         for(let key in stats) {
@@ -71,6 +72,7 @@ const ItemStatus = (props : {itemStatus : ItemType, isItemOnLoading: boolean}) =
             dispatch(setState({key: statType, val: Number(val)}));
         }
     }
+    // ItemStatusBox에 들어가는 값 설정
     const setItemStatusBox = () => {
         console.log(itemStatus);
         const parts = Object.keys(itemStatus);
@@ -88,7 +90,7 @@ const ItemStatus = (props : {itemStatus : ItemType, isItemOnLoading: boolean}) =
                 for(let statType in stats) {
                     const stat = stats[statType];
                     if(typeof(stat) === 'object') {
-                        setPotentialOption(stat);
+                        setPotentialOption(stat); // 잠재옵션은 객체로 오기 때문에 따로 처리함
                     }
                     else {
                         const regex = /데미지/;
@@ -104,7 +106,7 @@ const ItemStatus = (props : {itemStatus : ItemType, isItemOnLoading: boolean}) =
             }
         }
     };
-
+    
     useEffect(() => {
         if (itemStatus !== null) setItemStatusBox();
     }, [itemStatus]);

@@ -6,8 +6,6 @@ soulMaster.use(express.json());
 soulMaster.post("/soulMaster", async function (req, res, next) {
     console.log("소울마스터 패시브 스킬 ");
     try {
-        // console.log(req.body.skillStatus);
-        console.log("hi");
         const skillList = req.body.skillStatus;
         const resultList = [];
         skillList.forEach(skill => {

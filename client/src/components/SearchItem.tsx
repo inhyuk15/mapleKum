@@ -13,6 +13,10 @@ export type ItemStatType = {
 export type ItemType = {
   [name : string] : {[part : string] : ItemStatType};
 };
+type SkillType = {
+    skillName: string;
+    skillInfos: Array<string>
+}
 
 const SearchItem = (props: { item: searchDataType }) => {
     const { item } = props;
@@ -20,7 +24,7 @@ const SearchItem = (props: { item: searchDataType }) => {
     const [itemLink, setItemLink] = useState(null);
     const [skillLink, setSkillLink] = useState(null);
     const [itemStatus, setItemStatus] = useState<ItemType | null>(null);
-    const [skillStatus, setSkillStatus] = useState([]);
+    const [skillStatus, setSkillStatus] = useState<SkillType[] | null>(null);
 
     // for just css
     const [isSkillOnLoading, setIsSkillOnLoading] = useState(false);
@@ -32,10 +36,9 @@ const SearchItem = (props: { item: searchDataType }) => {
             const res = await axios.post('/users/status', { link });
             setStatus(res.data);
             setIsItemOnLoading(true);
-            console.log(res.data.itemLink);
             setItemLink(res.data.itemLink);
-            // setIsSkillOnLoading(true);
-            // setSkillLink(res.data[res.data.length - 1].skillLink);
+            setIsSkillOnLoading(true);
+            setSkillLink(res.data.skillLink);
         } catch (err) {
             console.error(err);
         }
@@ -50,9 +53,10 @@ const SearchItem = (props: { item: searchDataType }) => {
         }
     };
     useEffect(() => {
-      if(itemLink != null)
+      if(itemLink != null) {
         sendItemStatus(itemLink);
         setIsItemOnLoading(false);
+      }
     }, [itemLink]);
     // 스킬 정보가 있는 링크를 서버에 보내기
     const sendCharacterSkill = async (link : string) => {
@@ -65,16 +69,20 @@ const SearchItem = (props: { item: searchDataType }) => {
         }
     };
     useEffect(() => {
+      if(skillLink != null) {
+        sendCharacterSkill(skillLink);
+        setIsSkillOnLoading(false);
+      }
+    }, [skillLink]);
+
+    useEffect(() => {
         sendCharacterStatus(item.link);
     }, []);
 
-    useEffect(() => {
-      // sendCharacterSkill(skillLink);
-      // setIsSkillOnLoading(false);
-  }, [skillLink]);
+
     const CharacterCardLayout = styled.div`
-        &.card {
-            
+        div>.card {
+            color: orange;
             font-size: 2rem;
             
         }
@@ -94,11 +102,12 @@ const SearchItem = (props: { item: searchDataType }) => {
                     <div className="card">
                         <img src={item.characterServerImg} />
                         <div className="characterName">{item.characterName}</div>
+                        <div>의 캐릭터 정보</div>
                     </div>
                     <img src={item.characterImg} />
                     <div>
                         <div>{item.characterLevel}</div>
-                        <div>{item.characterInfo}님 캐릭터 정보</div>
+                        <div>{item.characterInfo}님</div>
                         <a href={item.link} target="_blank" rel="noreferrer">
                             홈페이지 캐릭터 정보
                         </a>
@@ -108,14 +117,8 @@ const SearchItem = (props: { item: searchDataType }) => {
                     <div>
                         { status && <CharacterKumStatus characterStatus = {status} /> }
                         { itemStatus && <ItemStatus itemStatus ={itemStatus} isItemOnLoading={isItemOnLoading} /> }
-                    </div>
-                    <div>
-                        {
-                            // <div className="bottom">
-                            //     <SkillStatus skillStatus={skillStatus} className = {characterClass}
-                            //         isSkillOnLoading={isSkillOnLoading} />
-                            // </div>
-                        }
+                        { skillStatus && <SkillStatus skillStatus={skillStatus} className = {characterClass}
+                        isSkillOnLoading={isSkillOnLoading} /> }
                     </div>
                 </div>
             </div>
