@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import CharacterKumStatus from './CharacterKumStatus';
 import SkillStatus from './SkillStatus';
 import ItemStatus from './ItemStatus';
 import { searchDataType } from './SearchList';
-import styled from 'styled-components';
 
 export type ItemStatType = {
   [key : string] : string;
@@ -53,15 +52,15 @@ const SearchItem = (props: { item: searchDataType }) => {
         }
     };
     useEffect(() => {
-      if(itemLink != null) {
-        sendItemStatus(itemLink);
-        setIsItemOnLoading(false);
-      }
+        if (itemLink != null) {
+            sendItemStatus(itemLink);
+            setIsItemOnLoading(false);
+        }
     }, [itemLink]);
     // 스킬 정보가 있는 링크를 서버에 보내기
     const sendCharacterSkill = async (link : string) => {
         try {
-          console.log(" 스킬 링크 : " + link);
+            console.log(' 스킬 링크 : '.concat(link));
             const res = await axios.post('/users/status/skill', { link });
             setSkillStatus(res.data);
         } catch (err) {
@@ -69,16 +68,15 @@ const SearchItem = (props: { item: searchDataType }) => {
         }
     };
     useEffect(() => {
-      if(skillLink != null) {
-        sendCharacterSkill(skillLink);
-        setIsSkillOnLoading(false);
-      }
+        if (skillLink != null) {
+            sendCharacterSkill(skillLink);
+            setIsSkillOnLoading(false);
+        }
     }, [skillLink]);
 
     useEffect(() => {
         sendCharacterStatus(item.link);
     }, []);
-
 
     const CharacterCardLayout = styled.div`
         div>.card {
@@ -116,9 +114,11 @@ const SearchItem = (props: { item: searchDataType }) => {
                 <div className="bottom">
                     <div>
                         { status && <CharacterKumStatus characterStatus = {status} /> }
-                        { itemStatus && <ItemStatus itemStatus ={itemStatus} isItemOnLoading={isItemOnLoading} /> }
-                        { skillStatus && <SkillStatus skillStatus={skillStatus} className = {characterClass}
-                        isSkillOnLoading={isSkillOnLoading} /> }
+                        { itemStatus && <ItemStatus itemStatus ={itemStatus}
+                            isItemOnLoading={isItemOnLoading} /> }
+                        { skillStatus && <SkillStatus skillStatus={skillStatus}
+                            className = {characterClass}
+                            isSkillOnLoading={isSkillOnLoading} /> }
                     </div>
                 </div>
             </div>

@@ -51,7 +51,9 @@ type SkillType = {
     skillInfos: Array<string>
 }
 
-const SkillStatus = (props : {skillStatus : SkillType[], className: string, isSkillOnLoading: boolean}) => {
+const SkillStatus = (props : {
+  skillStatus : SkillType[], className: string, isSkillOnLoading: boolean
+}) => {
     const { skillStatus, className, isSkillOnLoading } = props;
     const [passiveSkill, setPassiveSkill] = useState<any>([]);
     function addCygnusPassive(skills : SkillType[]) {
@@ -59,15 +61,15 @@ const SkillStatus = (props : {skillStatus : SkillType[], className: string, isSk
         skills.push({ skillName: '엘레멘탈 엑스퍼트', skillInfos: Array('공격력, 마력 10%') });
         return skills;
     }
-    const sendCharacterStatus = async (skillStatus : SkillType[]) => {
+    const sendCharacterStatus = async (skills : SkillType[]) => {
         try {
             const link = `/users/status/passiveSkill/${classNameMap.get(className)}`;
-            const res = await axios.post(link, { skillStatus });
-            let skills = res.data;
+            const res = await axios.post(link, { skills });
+            let skillData = res.data;
             if (cygnus.includes(className)) {
-                skills = addCygnusPassive(skills);
+                skillData = addCygnusPassive(skillData);
             }
-            setPassiveSkill(skills);
+            setPassiveSkill(skillData);
         } catch (err) {
             console.log(err);
         }
@@ -78,17 +80,18 @@ const SkillStatus = (props : {skillStatus : SkillType[], className: string, isSk
         }
     }, []);
 
-    type SetStatusBox = {
+    // type SetStatusBox = {
 
-    }
-    const setStatusBox = () => {
+    // }
+    // const setStatusBox = () => {
 
-    }
+    // }
 
     const StatusBox = () => {
         const [itemsList, setItemsList] = useState<any>([]);
         useEffect(() => {
-            for (const key in passiveSkill) {
+          const keys = Object.keys(passiveSkill);
+            for (const key in keys) {
                 const skillInfos = passiveSkill[key]
                     .skillInfos.map((elem : any) => (<li key={elem}>{elem}</li>));
                 const t = <ul key={key}>{passiveSkill[key].skillName} {skillInfos}</ul>;

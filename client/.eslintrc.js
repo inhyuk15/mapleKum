@@ -5,6 +5,7 @@ module.exports = {
   extends: [
     // Airbnb style guide 적용
     "airbnb-base",
+		"airbnb/hooks",
     // TypeScript ESLint recommanded style 적용
     "plugin:@typescript-eslint/eslint-recommended"
   ],

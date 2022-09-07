@@ -29,21 +29,21 @@ type Payload = {
 }
 
 const statsSlice = createSlice({
-  name: 'stats',
-  initialState: initialState,
-  reducers: {
-    setState: {
-      reducer: (state, action : PayloadAction<Payload>) => {
-        const key = action.payload.key;
-        const val = action.payload.val;
-        state[key] += val;
-      },
-      prepare: (payload: Payload) => {
-        return { payload : payload}
-      }
+    name: 'stats',
+    initialState: initialState,
+    reducers: {
+        setState: {
+            reducer: (state, action : PayloadAction<Payload>) => {
+                const key = action.payload.key;
+                const val = action.payload.val;
+                state[key] += val;
+            },
+            prepare: (payload: Payload) => {
+                return { payload : payload };
+            }
+        }
     }
-  }
-})
+});
 
 export const { setState } = statsSlice.actions;
 export default statsSlice.reducer;
