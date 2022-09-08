@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SearchForm from './components/SearchForm';
 import SearchLoading from './components/SearchLoading';
 import SearchList from './components/SearchList';
+import axios from 'axios';
 
 export type searchDataType = {
   characterName: string;
@@ -15,15 +16,19 @@ export type searchDataType = {
 function App() {
     const [searchData, setSearchData] = useState<searchDataType>();
     const [isOnLoading, setIsOnLoading] = useState(false);
-    const getData = (keyword: string) => {
-        setIsOnLoading(true);
-        console.log(`검색 키워드: ${keyword}`);
-        fetch(`/users/data?keyword=${keyword}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setSearchData(data);
-                setIsOnLoading(false);
-            });
+    const getData = async (keyword: string) => {
+        try {
+            setIsOnLoading(true);
+            const res = await axios.get(`/users/data?keyword=${keyword}`);
+            const data = res.data;
+            console.log(data);
+            setSearchData(data);
+            setIsOnLoading(false);
+        }
+        catch (err) {
+            console.error(err);
+        }
+        
     };
     return (
         <div className="App">

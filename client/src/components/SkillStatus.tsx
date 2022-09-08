@@ -64,6 +64,7 @@ const SkillStatus = (props : {
     const sendCharacterStatus = async (skills : SkillType[]) => {
         try {
             const link = `/users/status/passiveSkill/${classNameMap.get(className)}`;
+            console.log(skills);
             const res = await axios.post(link, { skills });
             let skillData = res.data;
             if (cygnus.includes(className)) {

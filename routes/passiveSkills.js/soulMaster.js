@@ -6,7 +6,7 @@ soulMaster.use(express.json());
 soulMaster.post("/soulMaster", async function (req, res, next) {
     console.log("소울마스터 패시브 스킬 ");
     try {
-        const skillList = req.body.skillStatus;
+        const skillList = req.body.skills;
         const resultList = [];
         skillList.forEach(skill => {
             const skillName = skill.skillName;
@@ -21,7 +21,6 @@ soulMaster.post("/soulMaster", async function (req, res, next) {
                 case '소울 플레지' :
                 case '소드 엑스퍼트' :
                 case '언포시어블' :
-                    // const infos = skillInfos.split(',').replace(/증가/g, '');
                     let infos = skillInfos[0].replace(/증가/g, '').split(',');
                     infos = infos.map(elem => elem.trim());
                     resultList.push({skillName : skillName, skillInfos : infos});

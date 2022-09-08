@@ -9,6 +9,9 @@ users.use("/data", async function (req, res) {
     res.json(result);
 });
 
+// http://gamebulletin.nexon.com/maplestory/inspection3.html?ReturnUrl=%2f
+// 점검중이면 다음페이지로 리다이렉트됨
+
 // 캐릭터 정보 줌
 async function openBrowser(keyword) {
     // 브라우저 실행 및 옵션, 현재 옵션은 headless 모드 사용 여부
