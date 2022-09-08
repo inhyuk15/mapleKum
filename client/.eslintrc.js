@@ -3,7 +3,6 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
   extends: [
-		"standard",
     // Airbnb style guide 적용
 		"airbnb",
 		"airbnb/hooks",
